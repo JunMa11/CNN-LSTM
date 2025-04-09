@@ -1,0 +1,62 @@
+
+data_path: "/content/"
+output_dir: "/home/jma/Documents/yu/cnn_lstm/checkpoints"
+
+seed: 1101
+
+train_bs: 4
+valid_bs: 4
+workers: 1
+
+progress_bar_refresh_rate: 1
+
+pseudo_train: 0
+
+save_topk: 1
+fold: 5
+
+task:
+    #kind: 'detect'
+    kind: 'classify'
+    #kind: 'depth'
+    #kind: 'depth2'
+    #condition: 'nfn'
+    #condition: 'scs'
+    condition: 'ss'
+
+in_chans: 3
+
+image_size: 384
+early_stop:
+    monitor: "val_loss"
+    mode: "min"
+    patience: 999
+    verbose: 1
+
+trainer:
+    max_epochs: 300
+    min_epochs: 300
+    enable_progress_bar: True
+    precision: "16-mixed"
+    devices: 1
+
+model:
+    name: "eff"
+    loss_smooth: 0.0
+    optimizer_params:
+        #lr: 0.001
+        lr: 0.0001
+        weight_decay: 0.0001
+    scheduler:
+        #name: "CosineAnnealingLR"
+        name: "cosine_with_warmup"
+        params:
+            CosineAnnealingLR:
+                T_max: 20
+                eta_min: 1.0e-5
+                last_epoch: -1
+            cosine_with_warmup:
+                num_training_steps: 300
+                num_warmup_steps: 5
+                num_cycles: 0.5
+                last_epoch: -1
